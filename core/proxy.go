@@ -49,6 +49,7 @@ type ReverseProxy struct {
 	Config         *config.Options
 
 	IsTLS bool
+	ForceHttps bool
 }
 
 type Settings struct {
@@ -280,7 +281,7 @@ func (httpResponse *HTTPResponse) PatchHeaders(p *ReverseProxy) {
 			}
 		}
 
-		if p.IsTLS == true {
+		if (p.IsTLS == true || p.ForceHttps == true) {
 			newLocation = strings.Replace(newLocation, "http://", "https://", -1)
 		} else {
 			newLocation = strings.Replace(newLocation, "https://", "http://", -1)
@@ -425,7 +426,7 @@ func (p *ReverseProxy) InjectPayloads(buffer []byte) []byte {
 func (p *ReverseProxy) PatchURL(buffer []byte) []byte {
 
 	// Fix protocol
-	if p.IsTLS == false {
+	if (p.IsTLS == false && p.ForceHttps == false) {
 		buffer = bytes.Replace(buffer, []byte("https"), []byte("http"), -1)
 	}
 
@@ -447,6 +448,9 @@ func (p *ReverseProxy) PatchURL(buffer []byte) []byte {
 	return buffer
 }
 
+
+
+
 // ReverseProxy factory
 func (s *Settings) NewReverseProxy() *ReverseProxy {
 
@@ -458,6 +462,7 @@ func (s *Settings) NewReverseProxy() *ReverseProxy {
 		Proxy:          httputil.NewSingleHostReverseProxy(targetURL),
 		Config:         &s.Options,
 		IsTLS:          *s.UseTls,
+		ForceHttps:     *s.ForceHttps,
 		OriginalTarget: s.originaltarget,
 	}
 
@@ -478,6 +483,7 @@ func (s *Settings) NewReverseProxy() *ReverseProxy {
 		ExpectContinueTimeout: 1 * time.Second,
 		IdleConnTimeout:       5 * time.Second,
 
+
 	}
 
 	// Handling: Request
@@ -490,6 +496,11 @@ func (s *Settings) NewReverseProxy() *ReverseProxy {
 		}
 		director(req)
 	}
+
+	rp.Proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+		log.Debugf("[Proxy error][Error: %s]", err.Error())
+	}
+
 
 	// Handling: Response
 	rp.Proxy.ModifyResponse = rp.rewriteResponse

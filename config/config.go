@@ -35,6 +35,7 @@ type Options struct {
 	TerminateRedirectUrl *string `json:"terminateRedirectUrl"`
 	TrackingCookie       *string `json:"trackingCookie"`
 	TrackingParam        *string `json:"trackingParam"`
+	ForceHttps           *bool   `json:"forceHttps"`
 	UseTls               *bool   `json:"useTls"`
 	Debug                *bool   `json:"debug"`
 	LogPostOnly          *bool   `json:"logPostOnly"`
@@ -57,12 +58,12 @@ var (
 		ListeningAddress: flag.String("listeningAddress", "127.0.0.1", "Listening address"),
 		Target:           flag.String("target", "", "Main target to proxy - Ex.: https://target.com"),
 		TargetRes: flag.String("targetRes", "",
-			"Comma separated list of target subdomains that need to pass through the reverse proxy - example: static.target.com"),
+			"Comma separated list of extra target subdomains that need to pass through the reverse proxy - example: static.target.com"),
 		TerminateTriggers: flag.String("terminateTriggers", "",
 			"Comma separated list of URLs from target's origin which will trigger session termination"),
 		TerminateRedirectUrl: flag.String("terminateUrl", "",
 			"URL to redirect the client after session termination triggers"),
-		TargetRules: flag.String("rules", "",
+		TargetRules: flag.String("targetRules", "",
 			"Comma separated list of 'string' patterns and their replacements. Example base64(new):base64(old),"+
 				"base64(newer):base64(older)"),
 		JsRules: flag.String("jsRules", "", "Comma separated list of URL patterns and JS base64 encoded payloads that will be injected. Example google.com:base64(alert(1)),..,etc"),
@@ -71,6 +72,7 @@ var (
 		TrackingParam:  flag.String("trackingParam", "id", "Name of the HTTP parameter used to track the victim"),
 
 		UseTls:          flag.Bool("tls", false, "Enable TLS"),
+		ForceHttps:      flag.Bool("forceHttps", false, "Force convert links from http to https"),
 		Debug:           flag.Bool("debug", false, "Print debug information"),
 		DisableSecurity: flag.Bool("disableSecurity", false, "Disable security features like anti-SSRF. Disable at your own risk."),
 

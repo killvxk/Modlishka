@@ -1,7 +1,13 @@
 # ..Modlishka..
 
-Modlishka is a flexible and powerful reverse proxy, that will take your phishing campaigns to the next level (with minimal effort required from your side). 
- 
+Modlishka is a flexible and powerful reverse proxy, that will take your ethical phishing campaigns to the next level. 
+
+It was realeased with an aim to:
+- help penetration testers to carry out an effective phishing campaign and reinforce the fact that **serious** threat can arise from phishing.
+- higlight current 2FA weaknesses, so adequate security solutions can be created and implemented soon.
+- raise community awareness about modern phishing techniques and strategies.
+- support other open source projects that require a universal reverse proxy.
+
 Enjoy :-)
 
 
@@ -13,13 +19,14 @@ Some of the most important 'Modlishka' features :
 -   Support for majority of 2FA authentication schemes (by design).
 -   No website templates (just point Modlishka to the target domain - in most cases, it will be handled automatically).
 -   Full control of "cross" origin TLS traffic flow from your victims browsers (through custom new techniques).
--   Flexible  and easily configurable phishing scenarios through configuration options.
+-   Flexible and easily configurable phishing scenarios through configuration options.
 -   Pattern based JavaScript payload injection.
 -   Striping website from all encryption and security headers (back to 90's MITM style). 
 -   User credential harvesting (with context based on URL parameter passed identifiers).
 -   Can be extended with your ideas through plugins.
 -   Stateless design. Can be scaled up easily for an arbitrary number of users - ex. through a DNS load balancer.
--   Web panel with a summary of collected credentials and user session impersonation (beta).
+-   Web panel with a summary of collected credentials and user session impersonation (beta POC).
+-   Backdoor free ;-) ...
 -   Written in Go.
 
 
@@ -27,13 +34,13 @@ Action
 ------
 _"A picture is worth a thousand words":_
 
- Modlishka in action against an example 2FA (SMS) enabled authentication scheme:
+ Modlishka in action against an example standard 2FA (SMS) enabled authentication scheme:
 
 [![Watch the video](https://i.vimeocdn.com/video/749353683.jpg)](https://vimeo.com/308709275)
 
 [https://vimeo.com/308709275](https://vimeo.com/308709275)
 
-Note: google.com was chosen here just as a POC.
+Note: google.com was chosen here just as a proof of concept.
 
 
 Installation
@@ -100,11 +107,11 @@ Compile the binary and you are ready to go:
       -postOnly
         	Log only HTTP POST requests
       
-      -rules string
-        	Comma separated list of 'string' patterns and their replacements. 
-      
       -target string
         	Main target to proxy - Ex.: https://target.com
+         
+      -targetRules string
+        	Comma separated list of 'string' patterns and their replacements. 
       
       -targetRes string
         	Comma separated list of target subdomains that need to pass through the  proxy 
@@ -134,10 +141,13 @@ Usage
  * [FAQ](https://github.com/drk1wi/Modlishka/wiki/FAQ) (Frequently Asked Questions)
  * [Blog post](https://blog.duszynski.eu/phishing-ng-bypassing-2fa-with-modlishka/)
 
+Contact
+-------
+contact@modlishka.io
 
 License
 -------
-Modlishka was made by Piotr Duszyński ([@drk1wi](https://twitter.com/drk1wi)). You can find the license [here](https://github.com/drk1wi/Modlishka/blob/master/LICENSE).
+Modlishka was made by Piotr Duszyński ([@drk1wi](https://twitter.com/drk1wi)). You can find the license [here](https://github.com/drk1wi/Modlishka/blob/master/LICENSE). 
 
 Credits
 -------
@@ -147,9 +157,4 @@ Thanks for helping with the code go to Giuseppe Trotta ([@Giutro](https://twitte
 Disclaimer
 ----------
 This tool is made only for educational purposes and can be only used in legitimate penetration tests. Author does not take any responsibility for any actions taken by its users.
-
--------
-
-[![Twitter](https://img.shields.io/badge/twitter-drk1wi-blue.svg)](https://twitter.com/drk1wi)
-
 
