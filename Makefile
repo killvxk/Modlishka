@@ -33,8 +33,10 @@ deps:
 
 
 build_linux: test linux
-build_freebsd: test freebsd
+build_linux_xgo: test linux
 build_windows: test windows
+build_windows_xgo: test windows
+build_freebsd: test freebsd
 
 linux:
 	GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags "-s -w" -o $(DIST_DIR)/$(BINARY_LINUX)  $(MAIN_FILE)
@@ -44,3 +46,17 @@ windows:
 
 freebsd:
 	GOOS=freebsd GOARCH=amd64 $(GOBUILD) -ldflags "-s -w" -o $(DIST_DIR)/$(BINARY_BSD)  $(MAIN_FILE)
+
+linux_amd64_xgo:
+	xgo --targets=linux/amd64  --dest $(DIST_DIR)/ ./
+
+linux_386_xgo:
+	xgo --targets=linux/386  --dest $(DIST_DIR)/ ./
+
+windows_xgo:
+	xgo --targets=windows/amd64  --dest $(DIST_DIR)/ ./
+
+freebsd_xgo:
+	xgo --targets=freebsd/amd64  --dest $(DIST_DIR)/ ./
+
+

@@ -42,6 +42,7 @@ const (
 
 const (
 	DEBUG = iota
+	STAT
 	INFO
 	WARNING
 	ERROR
@@ -60,10 +61,12 @@ var (
 		INFO:    "INF",
 		WARNING: "WAR",
 		ERROR:   "ERR",
+		STAT:	  "STAT",
 		FATAL:   "!!!",
 	}
 	colors = map[int]string{
 		DEBUG:   DIM + FG_BLACK + BG_DGRAY,
+		STAT:   DIM + FG_BLACK + BG_DGRAY,
 		INFO:    FG_WHITE + BG_GREEN,
 		WARNING: FG_WHITE + BG_YELLOW,
 		ERROR:   FG_WHITE + BG_RED,
@@ -76,7 +79,8 @@ var (
 type LoggingOptions struct {
 	GET      bool
 	POST     bool
-	FilePath string
+	LogRequestPath string
+
 }
 
 func Wrap(s, effect string) string {
@@ -126,10 +130,16 @@ func Errorf(format string, args ...interface{}) {
 	Log(ERROR, format, args...)
 }
 
+func Statf(format string, args ...interface{}) {
+	Log(INFO, format, args...)
+}
+
+
 func Fatalf(format string, args ...interface{}) {
 	Log(FATAL, format, args...)
 	os.Exit(1)
 }
+
 
 func Fatal(err error) {
 	Log(FATAL, "%s", err)

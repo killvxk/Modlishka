@@ -36,8 +36,9 @@ type Property struct {
 
 	Init            func()
 	Flags           func()
-	HTTPRequest     func(req *http.Request, context HTTPContext)
-	HTTPResponse    func(resp *http.Response, context HTTPContext)
+	HTTPRequest     func(req *http.Request, context *HTTPContext)
+	HTTPResponse    func(resp *http.Response, context *HTTPContext,buffer *[]byte)
+	TerminateUser    func(userID string)
 	RegisterHandler func(handler *http.ServeMux)
 }
 
@@ -45,9 +46,12 @@ type HTTPContext struct {
 	Target         *url.URL // Target URL after going through the proxy
 	OriginalTarget string   // Original Host
 	Origin         string   // Origin before going through the proxy
-	PhishUser      string   // traced victim's identifier
+	UserID         string   // traced user identifier
+	InitUserID     string   // traced user id
+	JSPayload      string   // JS Payload
 	IP             string   // victim's IP address
-
+	IsTLS		   bool 	//TLS request
+	Extra 		   map[string]string //Extra Plugin Data
 }
 
 // Add the given Plugin to the list of loaded plugins
@@ -133,19 +137,30 @@ func RegisterHandler(handler *http.ServeMux) {
 }
 
 // Execute plugin-defined HTTP Request hooks
-func (context HTTPContext) InvokeHTTPRequestHooks(req *http.Request) {
+func (context *HTTPContext) InvokeHTTPRequestHooks(req *http.Request) {
 	for _, p := range Plugins {
 		if p.Active && p.HTTPRequest != nil {
 			p.HTTPRequest(req, context)
 		}
 	}
+
 }
 
 // Execute plugin-defined HTTP Response hooks
-func (context HTTPContext) InvokeHTTPResponseHooks(resp *http.Response) {
+func (context *HTTPContext) InvokeHTTPResponseHooks(resp *http.Response, buffer *[]byte) {
 	for _, p := range Plugins {
 		if p.Active == true && p.HTTPResponse != nil {
-			p.HTTPResponse(resp, context)
+			p.HTTPResponse(resp, context,buffer)
 		}
 	}
+}
+
+// Execute plugin-defined Terminate User hooks
+func (context *HTTPContext) InvokeTerminateUserHooks(userID string) {
+	for _, p := range Plugins {
+		if p.Active && p.TerminateUser != nil {
+			p.TerminateUser(userID)
+		}
+	}
+
 }
